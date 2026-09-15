@@ -5,7 +5,7 @@
 
 To propose changes to the existing functions or the creation of a new one, the process is as follows:
 
-1. Create a new [issue](https://github.com/johnsarie27/AWSAutomation/issues/new/choose) using either:
+1. Create a new [issue](https://github.com/jjohns-dev/AWSAutomation/issues/new/choose) using either:
    - The `new_function_proposal` template if you want to propose a new function.
    - The `update_function_proposal` template if you want to modify a existing function.
 2. Create a new issue

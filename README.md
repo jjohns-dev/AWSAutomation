@@ -1,7 +1,7 @@
 # AWSAutomation
 
-[![validate](https://github.com/johnsarie27/AWSAutomation/actions/workflows/validate.yml/badge.svg)](https://github.com/johnsarie27/AWSAutomation/actions/workflows/validate.yml)
-[![release](https://github.com/johnsarie27/AWSAutomation/actions/workflows/release.yml/badge.svg)](https://github.com/johnsarie27/AWSAutomation/actions/workflows/release.yml)
+[![validate](https://github.com/jjohns-dev/AWSAutomation/actions/workflows/ci.yml/badge.svg)](https://github.com/jjohns-dev/AWSAutomation/actions/workflows/ci.yml)
+[![release](https://github.com/jjohns-dev/AWSAutomation/actions/workflows/release.yml/badge.svg)](https://github.com/jjohns-dev/AWSAutomation/actions/workflows/release.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![PowerShell 5.1+](https://img.shields.io/badge/PowerShell-5.1%2B-blue.svg)](https://github.com/PowerShell/PowerShell)
 
@@ -19,7 +19,7 @@ A PowerShell module for automating, auditing, and reporting on AWS resources. It
 Clone the repository and import the module directly:
 
 ```powershell
-git clone https://github.com/johnsarie27/AWSAutomation.git
+git clone https://github.com/jjohns-dev/AWSAutomation.git
 Import-Module ./AWSAutomation/AWSAutomation.psd1
 ```
 
