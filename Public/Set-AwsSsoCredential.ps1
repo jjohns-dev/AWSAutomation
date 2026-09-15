@@ -23,9 +23,9 @@ function Set-AwsSsoCredential {
     .OUTPUTS
         None.
     .EXAMPLE
-        PS C:\> Set-AwsSsoCredential -Account $accounts
+        PS C:\> Set-AwsSsoCredential -StartUrl 'https://example.awsapps.com/start/' -Account $accounts
         Performs the AWS IAM Identity Center device-authorization flow against the
-        default Start URL and writes refreshed access keys for every account in
+        supplied Start URL and writes refreshed access keys for every account in
         $accounts to ~/.aws/credentials.
     .NOTES
         Status: Stable
@@ -48,6 +48,14 @@ function Set-AwsSsoCredential {
         clear them manually:
 
             Remove-Variable -Scope Global -Name '<IdentityCenterName>_identity_center_*'
+
+        Default Start URL: -StartUrl is mandatory and has no built-in
+        default. To avoid supplying it on every call, set a per-user
+        default in your PowerShell profile. $PSDefaultParameterValues is
+        applied during parameter binding, before the mandatory-parameter
+        check runs, so no prompt occurs:
+
+            $PSDefaultParameterValues['Set-AwsSsoCredential:StartUrl'] = 'https://example.awsapps.com/start/'
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]
@@ -60,8 +68,9 @@ function Set-AwsSsoCredential {
         [Parameter(Mandatory = $false, HelpMessage = 'Identity Center region')]
         [System.String] $Region = 'us-east-1',
 
-        [Parameter(Mandatory = $false, HelpMessage = 'Identity Center url')]
-        [System.Uri] $StartUrl = 'https://mcssec.awsapps.com/start/',
+        [Parameter(Mandatory, HelpMessage = 'Identity Center url')]
+        [ValidateNotNullOrEmpty()]
+        [System.Uri] $StartUrl,
 
         [Parameter(Mandatory = $false, HelpMessage = 'Force add new accounts')]
         [System.Management.Automation.SwitchParameter] $Force,
