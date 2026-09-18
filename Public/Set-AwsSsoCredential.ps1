@@ -11,7 +11,7 @@ function Set-AwsSsoCredential {
         Stores IAM Identity Center session data in memory for refreshing credentials without logging into IAM Identity Center again.
         Stores account credentials in the default location (~/.aws/credentials) which are picked up by AWS Tools for PowerShell
     .PARAMETER Region
-        Identity Center Region
+        Region the IAM Identity Center instance is deployed in
     .PARAMETER StartUrl
         Identity Center URL
     .PARAMETER Force
@@ -23,7 +23,7 @@ function Set-AwsSsoCredential {
     .OUTPUTS
         None.
     .EXAMPLE
-        PS C:\> Set-AwsSsoCredential -StartUrl 'https://example.awsapps.com/start/' -Account $accounts
+        PS C:\> Set-AwsSsoCredential -Region 'us-east-1' -StartUrl 'https://example.awsapps.com/start/' -Account $accounts
         Performs the AWS IAM Identity Center device-authorization flow against the
         supplied Start URL and writes refreshed access keys for every account in
         $accounts to ~/.aws/credentials.
@@ -49,13 +49,26 @@ function Set-AwsSsoCredential {
 
             Remove-Variable -Scope Global -Name '<IdentityCenterName>_identity_center_*'
 
-        Default Start URL: -StartUrl is mandatory and has no built-in
-        default. To avoid supplying it on every call, set a per-user
-        default in your PowerShell profile. $PSDefaultParameterValues is
-        applied during parameter binding, before the mandatory-parameter
-        check runs, so no prompt occurs:
+        Region: -Region is the region the Identity Center instance
+        itself is deployed in, not the region you intend to operate in,
+        and it must match -StartUrl. A mismatch fails at
+        Start-SSOOIDCDeviceAuthorization with an opaque
+        InvalidRequestException ("Invalid request.").
+
+        Defaults: -Region and -StartUrl are both mandatory and have no
+        built-in defaults. To avoid supplying them on every call, set
+        per-user defaults in your PowerShell profile.
+        $PSDefaultParameterValues is applied during parameter binding,
+        before the mandatory-parameter check runs, so no prompt occurs:
 
             $PSDefaultParameterValues['Set-AwsSsoCredential:StartUrl'] = 'https://example.awsapps.com/start/'
+            $PSDefaultParameterValues['Set-AwsSsoCredential:Region'] = 'us-east-1'
+
+        Default the two together or not at all. If you use more than one
+        Identity Center instance and they are deployed in different
+        regions, leave -Region undefaulted so each call has to state it;
+        a stale default pairs the wrong regional endpoint with the right
+        Start URL and produces the InvalidRequestException above.
     #>
     [CmdletBinding()]
     [OutputType([System.Void])]
@@ -65,8 +78,9 @@ function Set-AwsSsoCredential {
         Justification = 'Token and per-account state are cached in Global-scope variables to avoid re-authenticating each invocation. See .NOTES.'
     )]
     Param(
-        [Parameter(Mandatory = $false, HelpMessage = 'Identity Center region')]
-        [System.String] $Region = 'us-east-1',
+        [Parameter(Mandatory, HelpMessage = 'Region the Identity Center instance is deployed in')]
+        [ValidateNotNullOrEmpty()]
+        [System.String] $Region,
 
         [Parameter(Mandatory, HelpMessage = 'Identity Center url')]
         [ValidateNotNullOrEmpty()]
