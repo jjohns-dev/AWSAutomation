@@ -18,6 +18,8 @@ function Set-AwsSsoCredential {
         Force add new accounts
     .PARAMETER Account
         Array of account info
+    .PARAMETER SharedCredentialFile
+        Store profiles in the shared credential file (~/.aws/credentials) instead of the Windows-only encrypted SDK store. No effect on Linux or macOS, where the shared credential file is always used.
     .INPUTS
         None.
     .OUTPUTS
@@ -90,7 +92,10 @@ function Set-AwsSsoCredential {
         [System.Management.Automation.SwitchParameter] $Force,
 
         [Parameter(Mandatory = $true, HelpMessage = 'Array of account info')]
-        [System.Object[]] $Account
+        [System.Object[]] $Account,
+
+        [Parameter(Mandatory = $false, HelpMessage = 'Store profiles in the shared credential file')]
+        [System.Management.Automation.SwitchParameter] $SharedCredentialFile
     )
     Begin {
         Write-Verbose -Message "Starting $($MyInvocation.Mycommand)"
@@ -165,7 +170,7 @@ function Set-AwsSsoCredential {
                         SessionToken = $TempCreds.SessionToken
                         StoreAs      = $IdentityCenterAccounts[$i].Profile
                     }
-                    if (-Not $IsWindows) { $awsCredParams['ProfileLocation'] = $credentialFile }
+                    if (-Not $IsWindows -or $SharedCredentialFile) { $awsCredParams['ProfileLocation'] = $credentialFile }
                     Set-AWSCredential @awsCredParams
                     $IdentityCenterAccounts[$i].CredsExpiration = $TempCreds.Expiration
                 }
