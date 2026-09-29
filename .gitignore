@@ -1,0 +1,6 @@
+# psake build outputs (Build/build.psake.ps1: $ArtifactFolder, $StagingFolder)
+Artifacts/
+Staging/
+
+# macOS
+.DS_Store

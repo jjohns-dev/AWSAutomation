@@ -9,7 +9,7 @@ function Set-AwsSsoCredential {
     .DESCRIPTION
         Use AWS named profiles and AWS Tools for PowerShell to store and refresh credentials for multiple accounts from a single IAM Identity Center.
         Stores IAM Identity Center session data in memory for refreshing credentials without logging into IAM Identity Center again.
-        Stores account credentials in the default location (~/.aws/credentials) which are picked up by AWS Tools for PowerShell
+        Stores account credentials where AWS Tools for PowerShell will pick them up: the shared credential file (~/.aws/credentials) on Linux and macOS, and the encrypted SDK store on Windows unless -SharedCredentialFile is specified.
     .PARAMETER Region
         Region the IAM Identity Center instance is deployed in
     .PARAMETER StartUrl
@@ -18,6 +18,8 @@ function Set-AwsSsoCredential {
         Force add new accounts
     .PARAMETER Account
         Array of account info
+    .PARAMETER SharedCredentialFile
+        Store profiles in the shared credential file (~/.aws/credentials) instead of the Windows-only encrypted SDK store. No effect on Linux or macOS, where the shared credential file is always used.
     .INPUTS
         None.
     .OUTPUTS
@@ -26,7 +28,13 @@ function Set-AwsSsoCredential {
         PS C:\> Set-AwsSsoCredential -Region 'us-east-1' -StartUrl 'https://example.awsapps.com/start/' -Account $accounts
         Performs the AWS IAM Identity Center device-authorization flow against the
         supplied Start URL and writes refreshed access keys for every account in
-        $accounts to ~/.aws/credentials.
+        $accounts to the platform default store: ~/.aws/credentials on Linux and
+        macOS, the encrypted SDK store on Windows.
+    .EXAMPLE
+        PS C:\> Set-AwsSsoCredential -Region 'us-east-1' -StartUrl 'https://example.awsapps.com/start/' -Account $accounts -SharedCredentialFile
+        Same as above, but writes to ~/.aws/credentials on Windows as well, so the
+        profiles are readable by tooling that only consults the shared credential
+        file.
     .NOTES
         Status: Stable
         Comments:
@@ -90,7 +98,10 @@ function Set-AwsSsoCredential {
         [System.Management.Automation.SwitchParameter] $Force,
 
         [Parameter(Mandatory = $true, HelpMessage = 'Array of account info')]
-        [System.Object[]] $Account
+        [System.Object[]] $Account,
+
+        [Parameter(Mandatory = $false, HelpMessage = 'Store profiles in the shared credential file')]
+        [System.Management.Automation.SwitchParameter] $SharedCredentialFile
     )
     Begin {
         Write-Verbose -Message "Starting $($MyInvocation.Mycommand)"
@@ -165,7 +176,7 @@ function Set-AwsSsoCredential {
                         SessionToken = $TempCreds.SessionToken
                         StoreAs      = $IdentityCenterAccounts[$i].Profile
                     }
-                    if (-Not $IsWindows) { $awsCredParams['ProfileLocation'] = $credentialFile }
+                    if (-Not $IsWindows -or $SharedCredentialFile) { $awsCredParams['ProfileLocation'] = $credentialFile }
                     Set-AWSCredential @awsCredParams
                     $IdentityCenterAccounts[$i].CredsExpiration = $TempCreds.Expiration
                 }
