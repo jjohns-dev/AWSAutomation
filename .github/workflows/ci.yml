@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   validate:
-    uses: jjohns-dev/pwsh-module-ci/.github/workflows/ci.yml@v1
+    uses: jjohns-dev/pwsh-module-ci/.github/workflows/ci.yml@v1.3.1
     with:
       os-matrix: '["ubuntu-latest"]'
     permissions:
