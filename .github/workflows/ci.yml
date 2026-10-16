@@ -13,9 +13,10 @@ concurrency:
 
 jobs:
   validate:
-    uses: jjohns-dev/pwsh-module-ci/.github/workflows/ci.yml@v1
+    uses: jjohns-dev/pwsh-module-ci/.github/workflows/ci.yml@v1.4.0
     with:
       os-matrix: '["ubuntu-latest"]'
+      min-tests: 479
     permissions:
       contents: read
       checks: write
