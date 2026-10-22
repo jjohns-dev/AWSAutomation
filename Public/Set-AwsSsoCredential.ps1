@@ -85,6 +85,11 @@ function Set-AwsSsoCredential {
         '',
         Justification = 'Token and per-account state are cached in Global-scope variables to avoid re-authenticating each invocation. See .NOTES.'
     )]
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute(
+        'PSUseShouldProcessForStateChangingFunctions',
+        '',
+        Justification = 'The function only writes credential profiles the caller explicitly asked to refresh; -WhatIf/-Confirm would add no decision the -Account argument does not already make.'
+    )]
     Param(
         [Parameter(Mandatory, HelpMessage = 'Region the Identity Center instance is deployed in')]
         [ValidateNotNullOrEmpty()]
