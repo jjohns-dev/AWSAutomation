@@ -10,7 +10,8 @@ PowerShell module wrapping AWS Tools for PowerShell with reporting, inventory, a
 | `Private/` | `.types.ps1xml` / `.format.ps1xml` extensions only — no private functions today. |
 | `Tests/Unit/` | One file per public function, `Verb-Noun.tests.ps1`. |
 | `Tests/Common/` | Help, manifest, and meta tests that run against **every** exported function automatically. |
-| `Build/` | psake build (`build.psake.ps1`), entry point (`build.ps1`), analyzer settings. |
+| `Build/` | psake build (`build.psake.ps1`), entry point (`build.ps1`), dependency list (`depend.psd1`), analyzer settings. |
+| `docs/adr/` | Architecture Decision Records ([ADR 1](docs/adr/0001-record-architecture-decisions.md)). Check here before reversing a structural choice. |
 
 Adding a public function means: the `.ps1` in `Public/`, a matching `Tests/Unit/` file, and a `FunctionsToExport` entry in `AWSAutomation.psd1`.
 
@@ -25,6 +26,14 @@ Adding a public function means: the `.ps1` in `Public/`, a matching `Tests/Unit/
 Add `-ResolveDependency` on a clean checkout. `Analyze` and `Test` both generate `Staging/` and `Artifacts/`; **run `Cleanup` when you are done** — they are gitignored but should not be left behind.
 
 Scanning with `Invoke-ScriptAnalyzer -Path . -Recurse` while `Staging/` exists double-counts every finding in `Public/`, because `Staging/` holds a copy. Clean up first, or read the counts with that in mind.
+
+## Dependencies
+
+`Build/depend.psd1` holds two policies; the reasoning is in [ADR 2](docs/adr/0002-float-runtime-dependencies.md).
+
+- Runtime dependencies (the `RequiredModules`: `AWS.Tools.*`, `ImportExcel`) are `'latest'`, which `build.ps1` installs by omitting `-Version`. Never replace it with a NuGet version range: under PSResourceGet 1.2.0 a range resolves to an arbitrary member, not its maximum.
+- Build tooling (`Pester`, `psake`, `PSScriptAnalyzer`, `PlatyPS`) stays exactly pinned. A bare version string is an exact pin, not a minimum.
+- Builds are not reproducible from the repo. The `Resolved dependency:` lines in a CI run's `-ResolveDependency` step are the only record of what it ran against; read them first when a build goes red with no change here.
 
 ## Tests
 
