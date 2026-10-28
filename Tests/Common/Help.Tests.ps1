@@ -55,11 +55,15 @@ Describe '<_> help' -ForEach $Cmdlets {
         ($Help.Examples.Example | Select-Object -First 1).Code | Should -Not -BeNullOrEmpty
     }
 
-    # Should be a valid link
-    It 'Should have valid link response' {
+    # A .LINK, where present, must be a well-formed absolute http(s) URI; not requested, so these tests stay offline.
+    # Both checks are needed: the pattern rejects 'ftp://...', IsWellFormedUriString rejects 'https://example.com/a^b'.
+    It 'Should have a well-formed link' {
         if ($Help.relatedLinks.navigationLink.uri) {
-            $Results = Invoke-WebRequest -Uri $Help.relatedLinks.navigationLink.uri -UseBasicParsing -TimeoutSec 10
-            $Results.StatusCode | Should -Be '200'
+            foreach ($Uri in @($Help.relatedLinks.navigationLink.uri | Where-Object { $_ })) {
+                $Uri | Should -Match '^https?://'
+                [System.Uri]::IsWellFormedUriString($Uri, [System.UriKind]::Absolute) |
+                    Should -BeTrue -Because ('''{0}'' is not a well-formed absolute URI' -f $Uri)
+            }
         }
     }
 
