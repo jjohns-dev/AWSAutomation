@@ -27,7 +27,7 @@ Describe '<_> help' -ForEach $Cmdlets {
         # Source them from the AST, not Get-Help: Get-Help silently drops a .PARAMETER block that names no real parameter,
         # which makes the matching-help assertion below a tautology. `$_ -and` drops the $null a help-less function yields.
         $HelpContent = if ($Command.ScriptBlock) { $Command.ScriptBlock.Ast.GetHelpContent() }
-        $HelpParameterNames = @($HelpContent.Parameters.Keys | Where-Object { $_ -and $_ -notin $Common })
+        $HelpParameterNames = @($HelpContent.Parameters.Keys | Where-Object { $_ -notin $Common })
     }
     BeforeAll {
         $Common = 'ProgressAction', 'Debug', 'ErrorAction', 'ErrorVariable', 'InformationAction', 'InformationVariable', 'OutBuffer', 'OutVariable', 'PipelineVariable', 'Verbose', 'WarningAction', 'WarningVariable', 'Confirm', 'Whatif'
