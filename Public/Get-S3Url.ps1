@@ -1,4 +1,25 @@
 function Get-S3Url {
+    <#
+    .SYNOPSIS
+        Get S3 object URL
+    .DESCRIPTION
+        Get S3 object URL
+    .PARAMETER BucketName
+        S3 Bucket name
+    .PARAMETER Key
+        S3 Object key
+    .PARAMETER Region
+        AWS Region
+    .INPUTS
+        None.
+    .OUTPUTS
+        System.String.
+    .EXAMPLE
+        PS C:\> Get-S3Url -BucketName myBucket -Key Files/Test/readme.txt
+        Returns the URL "https://myBucket.s3.us-east-1.amazonaws.com/Files/Test/readme.txt"
+    .NOTES
+        Status: Stable
+    #>
     [CmdletBinding()]
     [OutputType([System.String])]
     Param(
