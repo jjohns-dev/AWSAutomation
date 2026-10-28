@@ -74,13 +74,8 @@ Describe '<_> help' -ForEach $Cmdlets {
         $ParameterHelp.Description.Text | Should -Not -BeNullOrEmpty
     }
 
-    # Required value in Help should match IsMandatory property of parameter
-    It 'Should have correct mandatory value for parameter: <_>' -ForEach $CommandParameterNames -AllowNullOrEmptyForEach {
-        $CommandParameterName = $_
-        $ParameterHelp = $HelpParameters | Where-Object { $_.Name -ieq $CommandParameterName }
-        $CodeMandatory = ($Command.ParameterSets.Parameters | Sort-Object -Property Name -Unique | Where-Object { $_.Name -ieq $CommandParameterName }).IsMandatory.toString()
-        $ParameterHelp.Required | Should -Be $CodeMandatory
-    }
+    # Deliberately no mandatory-value test: with comment-based help, Get-Help derives Required
+    # from [Parameter(Mandatory)], so the assertion can only compare a value to itself. See jjohns-dev/pwsh-module-ci#17.
 
     # Shouldn't find extra parameters in help
     It 'Should have matching help for parameter: <_>' -ForEach $HelpParameterNames -AllowNullOrEmptyForEach {
