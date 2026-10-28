@@ -42,7 +42,7 @@ Describe '<_> help' -ForEach $Cmdlets {
 
     # If help is not found, synopsis in auto-generated help is the syntax diagram
     It 'Should not be auto-generated' {
-        $Help.Synopsis | Should -Not -Contain 'CommonParameters'
+        $Help.Synopsis | Should -Not -BeLike '*CommonParameters*'
     }
 
     # Should be a description for every function
