@@ -6,14 +6,14 @@ Accepted — 2026-10-28
 
 ## Context
 
-- `AWSAutomation.psd1` lists 14 `AWS.Tools.*` modules and `ImportExcel` in `RequiredModules` with no version constraint, so consumers install whatever is current when they install this module.
-- `Build/depend.psd1` pinned CI to `AWS.Tools` 5.0.132 (published 2026-01-12) and `ImportExcel` 7.8.9 (published 2024-05-18). By 2026-10-28 the gallery had 192 later `AWS.Tools.Common` 5.x releases, roughly one every 1.5 days. CI was testing a combination no consumer runs.
+- `AWSAutomation.psd1` lists 14 `AWS.Tools.*` modules and `ImportExcel` in `RequiredModules` with no version constraint, so a fresh install of this module resolves whatever is current.
+- `Build/depend.psd1` pinned CI to `AWS.Tools` 5.0.132 (published 2026-01-12) and `ImportExcel` 7.8.9 (published 2024-05-18). By 2026-10-28 the gallery had 192 later `AWS.Tools.Common` 5.x releases, roughly one every 1.5 days. CI was testing a combination a fresh install would not get.
 - Unit tests mock AWS.Tools cmdlets, and Pester binds a mock against the real command's parameter metadata. A change in that metadata breaks tests in this repo and calls in consumers alike; an exact pin only delays when CI sees it. `Set-AwsSsoCredential.tests.ps1`'s `-RemoveParameterType` workaround shows the coupling.
-- Pins were not at risk of disappearing: PSGallery does not delete packages, and `AWS.Tools.Common` still lists 1,371 versions back to 3.3.563.0. The concern is staleness, not availability.
+- The pinned versions were still available: `AWS.Tools.Common` lists 1,371 versions back to 3.3.563.0 (checked 2026-10-28). The concern is staleness, not availability.
 - `Pester`, `psake`, `PSScriptAnalyzer` and `PlatyPS` change test and analysis outcomes, not the module's runtime behaviour. Consumers never install them.
 - A bounded NuGet range does not yield the newest member under PSResourceGet 1.2.0 (measured 2026-10-28, recorded in #100). `Find-PSResource` returns range results in a non-semantic order and the installer takes the first: `[5.0.0,6.0.0)` on `AWS.Tools.Common` resolved to 5.0.300 against an in-range latest of 5.0.324, and `[7.0.0,8.0.0)` on `ImportExcel` resolved to 7.8.9 against 7.8.10. Omitting `-Version` resolved to the latest of both.
 - PSResourceGet also installs a module's dependencies, so `AWS.Tools.Common` can be installed by another `AWS.Tools.*` module before the loop reaches its own entry (#98's run warned it was already installed).
-- No other module repo in the fleet depends on `AWS.Tools`, so this is not fleet-wide policy.
+- Per #100, no other module repo in the fleet depends on `AWS.Tools`, so this is not fleet-wide policy.
 
 ## Decision
 
