@@ -34,7 +34,7 @@ function Edit-AWSProfile {
         PS C:\> Edit-AWSProfile -Update -ProfileName Profile1
         Update existing profile Profile1
     .LINK
-        ftp://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html#pstools-cred-provider-chain
+        https://docs.aws.amazon.com/powershell/latest/userguide/specifying-your-aws-credentials.html#pstools-cred-provider-chain
     .NOTES
         Status: Stable
         Comments:

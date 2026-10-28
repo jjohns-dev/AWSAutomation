@@ -12,7 +12,7 @@ function Get-WindowsDisk {
         PS C:\> Get-WindowsDisk
         Returns a mapping of the Windows disk(s) and associated EBS volume information
     .LINK
-        https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/a^b
+        https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-volumes.html#windows-volume-mapping
     .NOTES
         Status: Stable
         Comments:
