@@ -19,6 +19,8 @@ function Get-S3Url {
         Returns the URL "https://myBucket.s3.us-east-1.amazonaws.com/Files/Test/readme.txt"
     .NOTES
         Status: Stable
+    .LINK
+        https://example.com/a^b
     #>
     [CmdletBinding()]
     [OutputType([System.String])]
