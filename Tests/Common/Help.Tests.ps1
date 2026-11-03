@@ -11,7 +11,8 @@ BeforeDiscovery {
     if (-not (Get-Module -Name $env:BHProjectName)) { # -ListAvailable
         Import-Module -Name $env:BHPSModuleManifest -ErrorAction 'Stop' -Force
     }
-    # Names, not CommandInfo objects: CommandInfo in -ForEach hangs Pester 6.0.0 (fixed by 6.2.0).
+    # Names, not CommandInfo objects: a CommandInfo expands in the Describe title as
+    # "Management.Automation.FunctionInfo{Name='Foo'} help" instead of "Foo help".
     $Cmdlets = (Get-Command -Module $env:BHProjectName -CommandType 'Cmdlet', 'Function' -ErrorAction 'Stop').Name
 }
 
