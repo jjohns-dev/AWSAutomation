@@ -32,7 +32,7 @@ Scanning with `Invoke-ScriptAnalyzer -Path . -Recurse` while `Staging/` exists d
 `Build/depend.psd1` holds two policies; the reasoning is in [ADR 2](docs/adr/0002-float-runtime-dependencies.md).
 
 - Runtime dependencies (the `RequiredModules`: `AWS.Tools.*`, `ImportExcel`) are `'latest'`, which `build.ps1` installs by omitting `-Version`. Never replace it with a NuGet version range: under PSResourceGet 1.2.0 a range resolves to an arbitrary member, not its maximum.
-- Build tooling (`Pester`, `psake`, `PSScriptAnalyzer`, `PlatyPS`) stays exactly pinned. A bare version string is an exact pin, not a minimum.
+- Build tooling (`Pester`, `psake`, `PSScriptAnalyzer`) stays exactly pinned. A bare version string is an exact pin, not a minimum.
 - Builds are not reproducible from the repo. The `Resolved dependency:` lines in a CI run's `-ResolveDependency` step are the only record of what it ran against; read them first when a build goes red with no change here.
 
 ## Tests

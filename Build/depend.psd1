@@ -16,10 +16,9 @@
 
     # Common modules
     Pester                              = '6.2.0'
-    PlatyPS                             = '0.14.2'
-    psake                               = '4.9.1'
+    psake                               = '5.0.4'
     #PSDeploy         = '1.0.5'
-    PSScriptAnalyzer                    = '1.24.0'
+    PSScriptAnalyzer                    = '1.25.0'
     # REQUIRED FOR THIS SPECIFIC MODULE
     ImportExcel                         = 'latest'
     'AWS.Tools.Common'                  = 'latest'

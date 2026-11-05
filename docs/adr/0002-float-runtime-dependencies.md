@@ -4,6 +4,13 @@
 
 Accepted — 2026-10-28
 
+Amended — 2026-11-04
+
+**Amendment, 2026-11-04 — `PlatyPS` removed from the pinned build tooling.** `PlatyPS` was installed on every CI run but never invoked: no build task, script or test calls it, and the repo has no `Documentation/` or `en-US/` help. It was dropped from `Build/depend.psd1` ([jjohns-dev/pwsh-module-ci#24](https://github.com/jjohns-dev/pwsh-module-ci/issues/24)). The decision is unchanged; the Decision below is corrected in place because it is operative guidance.
+
+- Context is deliberately **not** rewritten — it records the forces as they stood on 2026-10-28. Its tooling bullet is wrong about `PlatyPS`: a tool that is never called cannot change test or analysis outcomes, so it never belonged in that list.
+- The amendment also adds the missing precondition to Consequences: this policy is derived from this repo's manifest and must not be copied elsewhere without re-deriving it.
+
 ## Context
 
 - `AWSAutomation.psd1` lists 14 `AWS.Tools.*` modules and `ImportExcel` in `RequiredModules` with no version constraint, so a fresh install of this module resolves whatever is current.
@@ -18,7 +25,7 @@ Accepted — 2026-10-28
 ## Decision
 
 - We will set every `RequiredModules` dependency in `Build/depend.psd1`, the 14 `AWS.Tools.*` modules and `ImportExcel`, to the sentinel `'latest'`, and `Build/build.ps1` will omit `-Version` for it.
-- We will keep `Pester`, `psake`, `PSScriptAnalyzer` and `PlatyPS` exactly pinned.
+- We will keep `Pester`, `psake` and `PSScriptAnalyzer` exactly pinned.
 - We will not use a version range to bound the floated modules.
 - We will log every installed version of every dependency after resolution, because the CI log becomes the only record of what a build ran against.
 
@@ -31,3 +38,4 @@ Accepted — 2026-10-28
 - A dependency-driven install and the explicit install can land on different versions of the same module during one run, for example if AWS publishes mid-run. The resolution log makes that visible; nothing prevents it.
 - CI runs on `ubuntu-latest` only, so floated versions are never validated on Windows here.
 - `depend.psd1` now mixes two policies; adding a dependency means deciding which policy it belongs to.
+- The policy holds only because `AWSAutomation.psd1` lists the 14 `AWS.Tools.*` modules and `ImportExcel` as unversioned `RequiredModules`, which no other repo in the fleet does (#100). It is not a template: copying it to another repo without re-deriving it from that repo's manifest imports the conclusion without its precondition.
