@@ -3,6 +3,7 @@
 ## Status
 
 Accepted — 2026-10-28
+
 Amended — 2026-11-04
 
 **Amendment, 2026-11-04 — `PlatyPS` removed from the pinned build tooling.** `PlatyPS` was installed on every CI run but never invoked: no build task, script or test calls it, and the repo has no `Documentation/` or `en-US/` help. It was dropped from `Build/depend.psd1` ([jjohns-dev/pwsh-module-ci#24](https://github.com/jjohns-dev/pwsh-module-ci/issues/24)). The decision is unchanged; the Decision below is corrected in place because it is operative guidance.
