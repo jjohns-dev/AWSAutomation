@@ -73,7 +73,7 @@ AWSAutomation/
 │   │   ├── validate.yml  # CI: PSScriptAnalyzer + Pester on every PR
 │   │   └── release.yml   # Publish to PowerShell Gallery on release
 │   └── release.yml       # Automated release notes config
-├── Build/                # Build and packaging scripts (PSake/InvokeBuild)
+├── Build/                # Shim for the shared pwsh-module-ci build harness
 ├── Private/              # Internal helpers and custom type extensions (.ps1xml)
 ├── Public/               # Exported functions — one file per function
 ├── Tests/                # Pester test suite

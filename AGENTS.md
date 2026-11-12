@@ -10,7 +10,7 @@ PowerShell module wrapping AWS Tools for PowerShell with reporting, inventory, a
 | `Private/` | `.types.ps1xml` / `.format.ps1xml` extensions only — no private functions today. |
 | `Tests/Unit/` | One file per public function, `Verb-Noun.tests.ps1`. |
 | `Tests/Common/` | Help, manifest, and meta tests that run against **every** exported function automatically. |
-| `Build/` | psake build (`build.psake.ps1`), entry point (`build.ps1`), dependency list (`depend.psd1`), analyzer settings. |
+| `Build/` | The shim (`build.ps1`) that runs the shared [pwsh-module-ci](https://github.com/jjohns-dev/pwsh-module-ci/blob/main/docs/consumer-guide.md) harness at the version `ci.yml` pins, plus `harness.psd1` for this module's settings. Do not edit the shim. |
 | `docs/adr/` | Architecture Decision Records ([ADR 1](docs/adr/0001-record-architecture-decisions.md)). Check here before reversing a structural choice. |
 
 Adding a public function means: the `.ps1` in `Public/`, a matching `Tests/Unit/` file, and a `FunctionsToExport` entry in `AWSAutomation.psd1`.
@@ -29,10 +29,10 @@ Scanning with `Invoke-ScriptAnalyzer -Path . -Recurse` while `Staging/` exists d
 
 ## Dependencies
 
-`Build/depend.psd1` holds two policies; the reasoning is in [ADR 2](docs/adr/0002-float-runtime-dependencies.md).
+The shared harness applies two policies ([pwsh-module-ci ADR-0008](https://github.com/jjohns-dev/pwsh-module-ci/blob/main/docs/adr/0008-runtime-modules-float-build-tools-pinned.md)); the reasoning for this repo is in [ADR 2](docs/adr/0002-float-runtime-dependencies.md).
 
-- Runtime dependencies (the `RequiredModules`: `AWS.Tools.*`, `ImportExcel`) are `'latest'`, which `build.ps1` installs by omitting `-Version`. Never replace it with a NuGet version range: under PSResourceGet 1.2.0 a range resolves to an arbitrary member, not its maximum.
-- Build tooling (`Pester`, `psake`, `PSScriptAnalyzer`) stays exactly pinned. A bare version string is an exact pin, not a minimum.
+- Runtime dependencies float: the harness installs the latest release of each unversioned `RequiredModules` entry in `AWSAutomation.psd1` (`AWS.Tools.*`, `ImportExcel`). A pin belongs in the manifest, where users' installs see it too.
+- Build tooling (`Pester`, `psake`, `PSScriptAnalyzer`) is pinned in pwsh-module-ci's [`Build/depend.psd1`](https://github.com/jjohns-dev/pwsh-module-ci/blob/main/Build/depend.psd1), not here.
 - Builds are not reproducible from the repo. The `Resolved dependency:` lines in a CI run's `-ResolveDependency` step are the only record of what it ran against; read them first when a build goes red with no change here.
 
 ## Tests
@@ -50,9 +50,9 @@ Pester 5+. Never reach AWS — mock it.
 Two different scopes, and confusing them wastes time:
 
 - `Build/build.ps1 -TaskList Analyze` (and CI's `validate` job) analyzes **`Staging/` only**, so no test or build file is ever covered.
-- `.github/workflows/pssa-sarif.yml` scans the **whole repo** and feeds the Security tab. It honors `Build/PSScriptAnalyzerSettings.psd1` and `SuppressMessageAttribute`, and posts PR review comments that auto-resolve once an alert closes.
+- `.github/workflows/pssa-sarif.yml` scans the **whole repo** and feeds the Security tab. It honors the harness's analyzer settings plus `PSScriptAnalyzerExcludeRules` in `Build/harness.psd1`, along with `SuppressMessageAttribute`, and posts PR review comments that auto-resolve once an alert closes.
 
-Policy: suppress **in place** with `SuppressMessageAttribute` plus a real `Justification`, so a new violation elsewhere still fires. `ExcludeRules` in the settings file is reserved for rules that fire on a uniform, settled API decision across the module — currently `PSUsePSCredentialType` and `PSAvoidUsingPlainTextForPassword`, both triggered by the `[Amazon.Runtime.AWSCredentials[]] $Credential` parameter nearly every public function exposes. Record the reasoning in the settings file header when adding one.
+Policy: suppress **in place** with `SuppressMessageAttribute` plus a real `Justification`, so a new violation elsewhere still fires. `PSScriptAnalyzerExcludeRules` in `Build/harness.psd1` is reserved for rules that fire on a uniform, settled API decision across the module — currently `PSUsePSCredentialType` and `PSAvoidUsingPlainTextForPassword`, both triggered by the `[Amazon.Runtime.AWSCredentials[]] $Credential` parameter nearly every public function exposes. Record the reasoning in `Build/harness.psd1`, directly above that key, when adding one. `.vscode/PSScriptAnalyzerSettings.psd1` is the editor-only copy for VS Code; keep its `ExcludeRules` identical to that key.
 
 ## Versioning and release
 

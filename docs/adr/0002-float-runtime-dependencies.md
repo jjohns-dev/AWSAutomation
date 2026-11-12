@@ -6,6 +6,8 @@ Accepted — 2026-10-28
 
 Amended — 2026-11-04
 
+As of 2026-11-12 this policy lives in the shared pwsh-module-ci harness, which floats runtime modules from the manifest's `RequiredModules` and pins the build tools in its own `Build/depend.psd1` ([pwsh-module-ci ADR-0008](https://github.com/jjohns-dev/pwsh-module-ci/blob/main/docs/adr/0008-runtime-modules-float-build-tools-pinned.md)).
+
 **Amendment, 2026-11-04 — `PlatyPS` removed from the pinned build tooling.** `PlatyPS` was installed on every CI run but never invoked: no build task, script or test calls it, and the repo has no `Documentation/` or `en-US/` help. It was dropped from `Build/depend.psd1` ([jjohns-dev/pwsh-module-ci#24](https://github.com/jjohns-dev/pwsh-module-ci/issues/24)). The decision is unchanged; the Decision below is corrected in place because it is operative guidance.
 
 - Context is deliberately **not** rewritten — it records the forces as they stood on 2026-10-28. Its tooling bullet is wrong about `PlatyPS`: a tool that is never called cannot change test or analysis outcomes, so it never belonged in that list.
