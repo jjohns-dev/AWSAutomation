@@ -11,10 +11,15 @@ on:
       - CONTRIBUTING.md
       - .gitignore
       - .github/**
+  pull_request:
+    branches: ["*"]
 
 jobs:
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    uses: jjohns-dev/pwsh-module-ci/.github/workflows/release.yml@v1
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'pull_request'
+    uses: jjohns-dev/pwsh-module-ci/.github/workflows/release.yml@v2
+    with:
+      artifact-name: ${{ github.event_name == 'pull_request' && 'AWSAutomation-dry-run' || 'Artifacts' }}
+      dry-run: ${{ github.event_name == 'pull_request' }}
     permissions:
       contents: write
