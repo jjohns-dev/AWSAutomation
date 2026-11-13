@@ -9,7 +9,7 @@ PowerShell module wrapping AWS Tools for PowerShell with reporting, inventory, a
 | `Public/` | One exported function per file, named `Verb-Noun.ps1`. This is the module's API surface. |
 | `Private/` | `.types.ps1xml` / `.format.ps1xml` extensions only — no private functions today. |
 | `Tests/Unit/` | One file per public function, `Verb-Noun.tests.ps1`. |
-| `Tests/Common/` | Help, manifest, and meta tests that run against **every** exported function automatically. |
+| `Tests/Common/` | Help tests that run against **every** exported function automatically. Manifest, encoding, and path-literal checks come from the [shared harness suites](https://github.com/jjohns-dev/pwsh-module-ci/blob/main/docs/consumer-guide.md#shared-tests), not this repo. |
 | `Build/` | The shim (`build.ps1`) that runs the shared [pwsh-module-ci](https://github.com/jjohns-dev/pwsh-module-ci/blob/main/docs/consumer-guide.md) harness at the version `ci.yml` pins, plus `harness.psd1` for this module's settings. Do not edit the shim. |
 | `docs/adr/` | Architecture Decision Records ([ADR 1](docs/adr/0001-record-architecture-decisions.md)). Check here before reversing a structural choice. |
 
