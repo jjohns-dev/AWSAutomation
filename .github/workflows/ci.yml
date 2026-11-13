@@ -16,7 +16,7 @@ jobs:
     uses: jjohns-dev/pwsh-module-ci/.github/workflows/ci.yml@v2
     with:
       os-matrix: '["ubuntu-latest"]'
-      min-tests: 434 # 444 collected - min(floor(444 * 0.05), 10) = 444 - 10
+      min-tests: 474 # 484 collected - min(floor(484 * 0.05), 10) = 484 - 10
     permissions:
       contents: read
       checks: write
