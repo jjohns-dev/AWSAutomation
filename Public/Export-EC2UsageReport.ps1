@@ -109,7 +109,7 @@ function Export-EC2UsageReport {
             $ReportPath = Join-Path -Path $OutputDirectory -ChildPath ('{0}_{1}.xlsx' -f $date, $reportName)
         }
         else {
-            $ReportPath = Join-Path -Path "$HOME\Desktop" -ChildPath ('{0}_{1}.xlsx' -f $date, $reportName)
+            $ReportPath = Join-Path -Path (Join-Path -Path $HOME -ChildPath 'Desktop') -ChildPath ('{0}_{1}.xlsx' -f $date, $reportName)
         }
 
         # SET VAR FOR INSTANCES

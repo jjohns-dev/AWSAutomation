@@ -69,7 +69,7 @@ function Export-CFNStackDrift {
         }
 
         if ( $PSBoundParameters.ContainsKey('Path') ) { $excelParams.Add("Path", $Path) }
-        else { $excelParams['Path'] = Join-Path -Path "$HOME\Desktop" -ChildPath ('CFNStackDrift_{0:yyyy-MM-dd}.xlsx' -f (Get-Date)) }
+        else { $excelParams['Path'] = Join-Path -Path (Join-Path -Path $HOME -ChildPath 'Desktop') -ChildPath ('CFNStackDrift_{0:yyyy-MM-dd}.xlsx' -f (Get-Date)) }
 
         $props = @("PhysicalResourceId", "StackResourceDriftStatus")
 
